@@ -118,16 +118,17 @@ public class SeamCarving
    }
    
    
-   public static List<Integer> Bellman(Graph g, ArrayList<Integer> order){
+   public static List<Integer> Bellman(Graph g, int s, int t, ArrayList<Integer> order){
 	   List<Integer> res = new ArrayList<Integer>();
 	   int T[] = new int[g.vertices()];
+	   int history[] = new int[g.vertices()];
 	   T[order.get(0)] = 0;
 	   order.remove(0);
 	   
 	   boolean finished = false;
 	   while(! finished){
 		   int vertex = order.get(0);
-		   System.out.println("vertex : " + vertex);
+		   //System.out.println("vertex : " + vertex);
 		   order.remove(0);
 		   finished = order.isEmpty();
 		   
@@ -141,8 +142,23 @@ public class SeamCarving
 			   }
 		   }
 		   T[vertex] = min < T[vertex] ? min : T[vertex];
-		   res.add(vertexOfMin);
-		   
+		   history[vertex] = vertexOfMin;
+	   }
+	   
+	   //get the best path
+	   int prev = t;
+	   res.add(t);
+	   while(history[prev] != s){
+		   res.add(history[prev]);
+		   prev = history[prev];
+	   }
+	   res.add(s);
+	   
+	   //invert elements
+	   for(int i=0; i < res.size()/2; i++){
+		   int tmp = res.get(i);
+		   res.set(i, res.get(res.size()-i-1));
+		   res.set(res.size()-i-1, tmp);
 	   }
 	   
 	   return res;
@@ -210,7 +226,7 @@ public class SeamCarving
 	   g.writeFile("output.txt");
 	   ArrayList<Integer> order = (ArrayList<Integer>) DFS.tritopo(g, g.vertices()-2);
 	   System.out.println(order);
-	   List<Integer> path = Bellman(g, order);
+	   List<Integer> path = Bellman(g, g.vertices()-2, g.vertices()-1, order);
 	   
 	   System.out.println(path);
    }
