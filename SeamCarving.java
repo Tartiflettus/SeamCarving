@@ -165,6 +165,40 @@ public class SeamCarving
    }
    
    
+   
+   public static void suppressColumn(int[][] image, ArrayList<Integer> column){	   
+	   final int width = image[0].length;
+	   final int height = image.length;
+	   int currentLine = 0;
+	   
+	   //System.out.println("image dimension: " + width + " ; " + height);
+	   //System.out.println("selected column : " + column);
+
+	   
+	   for(int j=1; j < column.size()-1; j++){
+		   final int pix = column.get(j);
+		   //System.out.println("pix : " + pix);
+		   
+		   //correct the line
+		   final int colPixSuppr = pix % width;
+		   //System.out.println("colomn suppressed pixel : " + colPixSuppr);
+		   int[] line = new int[width-1];
+		   int i=0;
+		   
+		   for(i=0; i < width-1 && i != colPixSuppr; i++){ //before pix
+			   line[i] = image[currentLine][i];
+		   }
+		   for( ; i < width-1; i++){ //after pix
+			   line[i] = image[currentLine][i+1];
+		   }
+		   
+		   image[currentLine] = line;
+		   currentLine++;
+	   }
+   }
+   
+   
+   
    public static void testWrite(){
 	   int[][] image = new int[2][2];
 	   image[0][1] = 1;
@@ -232,12 +266,25 @@ public class SeamCarving
    }
    
    
+   public static void testInterestInput(){
+	   int[][] image = readpgm("input.pgm");
+	   int[][] interest = interest(image);
+	   
+	   for(int i=0; i < image.length; i++){
+		   for(int j=0; j < image[i].length; j++){
+			   System.out.print(image[i][j]+ " ");
+		   }
+		   System.out.println();
+	   }
+   }
+   
+   
    public static void main(String args[]){
 	   //SeamCarving.testWrite();
 	   //SeamCarving.testRead();
 	   //SeamCarving.testInterest();
 	   //SeamCarving.testGraph();
-	   SeamCarving.testbellman();
+	   //SeamCarving.testbellman();
 	   /*ArrayList<Integer> b = new ArrayList<Integer>();
 	   b.add(1);
 	   b.add(2);
@@ -245,7 +292,22 @@ public class SeamCarving
 	   System.out.println(b.get(0));
 	   b.remove(0);
 	   System.out.println(b);*/
-
+	   
+	   if(args.length < 1){
+		   System.err.println("usage : java SeamCarving <filename>\n");
+		   return;
+	   }
+	   
+	   int[][] image = readpgm(args[0]);
+	   int[][] interest = interest(image);
+	   Graph graph = tograph(interest);
+	   ArrayList<Integer> order = (ArrayList<Integer>) DFS.tritopo(graph, graph.vertices()-2);
+	   ArrayList<Integer> selectedColumn = (ArrayList<Integer>) Bellman(graph, graph.vertices()-2, graph.vertices()-1, order);
+	   	   
+	   suppressColumn(image, selectedColumn);
+	   writepgm(image, "output.txt");
+	   
+	   //testInterestInput();
    }
 
    
