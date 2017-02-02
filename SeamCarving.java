@@ -112,7 +112,7 @@ public class SeamCarving
 	   //P edges
 	   final int nbLines = itr.length;
 	   final int nbCols = itr[0].length;
-	   for(int i=0; i < itr[0].length; i++){
+	   for(int i=0; i < nbCols; i++){
 		   g.addEdge(new Edge((nbLines-1)*nbCols + i, g.vertices()-1, itr[nbLines-1][i]));
 	   }
 	   
@@ -177,13 +177,10 @@ public class SeamCarving
 
 	   
 	   for(int j=1; j < column.size()-1; j++){
-		   final int pix = column.get(j);
-		   //System.out.println("pix : " + pix);
+		   //final int pix = column.get(j);
 		   
 		   //correct the line
-		   final int colPixSuppr = pix % width;
-		   //System.out.println("colomn suppressed pixel : " + colPixSuppr);
-		   int[] line = new int[width-1];
+		   final int colPixSuppr = column.get(j) % width;
 		   int i=0;
 		   
 		   for(i=0; i != colPixSuppr; i++){ //before pix
@@ -193,11 +190,7 @@ public class SeamCarving
 			   nouvelleImage[j-1][i] = image[j-1][i+1];
 		   }
 		   
-		   /*for(int elem : nouvelleImage[j-1]){
-			   System.out.print(elem +" ");
-		   }
-		   System.out.println("\n");*/
-		   //System.out.println(image[j-1].toString());
+		   
 	   }
 	   return nouvelleImage;
    }
@@ -297,18 +290,6 @@ public class SeamCarving
    }*/
    
    public static void main(String args[]){
-	   //SeamCarving.testWrite();
-	   //SeamCarving.testRead();
-	   //SeamCarving.testInterest();
-	   //SeamCarving.testGraph();
-	   //SeamCarving.testbellman();
-	   /*ArrayList<Integer> b = new ArrayList<Integer>();
-	   b.add(1);
-	   b.add(2);
-	   b.add(0);
-	   System.out.println(b.get(0));
-	   b.remove(0);
-	   System.out.println(b);*/
 	   
 	   if(args.length < 2){
 		   System.err.println("usage : java SeamCarving <filename> <col number>\n");
@@ -340,7 +321,6 @@ public class SeamCarving
 	   
 	   System.out.println("Merci de votre patience !!!! :D");
 	   
-	   //testInterestInput();
    }
 
    
