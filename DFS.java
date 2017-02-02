@@ -58,14 +58,14 @@ class DFS
     }
 
     
-    public static List<Integer> tritopo(Graph g, int s){
+    public static ArrayList<Integer> tritopo(Graph g, int s){
 	    ArrayList<Integer> res = new ArrayList<Integer>(g.vertices());
 	    	
 		Stack<Integer> stack = new Stack<Integer>();
 		boolean visited[] = new boolean[g.vertices()];
 		stack.push(s);
 		visited[s] = true;
-		System.out.println(s);
+		//System.out.println(s);
 		while (!stack.empty()){
 		    boolean end = true;
 		    /* (a) Soit u le sommet en haut de la pile */
@@ -80,7 +80,7 @@ class DFS
 			if (!visited[e.to]) /* (b) */
 			    {
 				visited[e.to] = true;
-				System.out.println(e.to);			
+				//System.out.println(e.to);			
 				stack.push(e.to); /*(c) */
 				end = false;
 				break;
@@ -102,8 +102,30 @@ class DFS
     }
 
 
-    
+    /*public static ArrayList<Integer> tritopo(Graph g, int s){
+    	ArrayList<Integer> res = new ArrayList<Integer>();
+    	boolean[] visite = new boolean[g.vertices()];
+    	
+    	helpTritopo(g, s, res, visite);
+    	
+    	for(int i=0; i < res.size()/2; i++){
+    		int tmp = res.get(i);
+    		res.set(i, res.get(res.size()-i-1));
+    		res.set(res.size()-i-1, tmp);
+    	}
+    	return res;
+    }
 
+    
+    public static void helpTritopo(Graph g, int s, ArrayList<Integer> res, boolean[] visite){
+    	visite[s] = true;
+    	for(Edge e : g.next(s)){
+    		if(!visite[e.to]){
+    			helpTritopo(g, s, res, visite);
+    		}
+    	}
+    	res.add(s);
+    }*/
 
     
     

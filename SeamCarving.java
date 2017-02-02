@@ -3,6 +3,8 @@ import java.io.*;
 import java.util.*;
 public class SeamCarving
 {
+	
+	private static int inputDepth = 65535;
 
    public static int[][] readpgm(String fn)
 	 {		
@@ -20,6 +22,7 @@ public class SeamCarving
 		   line = d.readLine();
 		   s = new Scanner(line);
 		   int maxVal = s.nextInt();
+		   inputDepth = maxVal;
 		   int[][] im = new int[height][width];
 		   s = new Scanner(d);
 		   int count = 0;
@@ -38,13 +41,12 @@ public class SeamCarving
    
    public static void writepgm(int[][] image, String filename){
 	   try {
-		   
 		PrintWriter ow = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
 		ow.println("P2"); //magic number for PGM
 		ow.print(image[0].length); //number of columns
 		ow.print(" ");
 		ow.println(image.length); //number of lines
-		ow.println(65535); //max intensity
+		ow.println(inputDepth); //max intensity
 		
 		for(int i=0; i < image.length; i++){
 			for(int j=0; j < image[i].length; j++){
@@ -89,8 +91,8 @@ public class SeamCarving
 	   GraphArrayList g = new GraphArrayList(itr.length*itr[0].length + 2/*A and P*/);
 	   for(int i=0; i < itr.length-1; i++){
 		   for(int j=0; j < itr[i].length; j++){
-			   int src = i*itr.length + j;
-			   int targetBase = src + itr.length;
+			   int src = i*itr[0].length + j;
+			   int targetBase = src + itr[0].length;
 			   g.addEdge(new Edge(src, targetBase, itr[i][j]));
 			   
 			   if(j != 0){
@@ -118,8 +120,8 @@ public class SeamCarving
    }
    
    
-   public static List<Integer> Bellman(Graph g, int s, int t, ArrayList<Integer> order){
-	   List<Integer> res = new ArrayList<Integer>();
+   public static ArrayList<Integer> Bellman(Graph g, int s, int t, ArrayList<Integer> order){
+	   ArrayList<Integer> res = new ArrayList<Integer>();
 	   int T[] = new int[g.vertices()];
 	   int history[] = new int[g.vertices()];
 	   T[order.get(0)] = 0;
@@ -166,11 +168,10 @@ public class SeamCarving
    
    
    
-   public static void suppressColumn(int[][] image, ArrayList<Integer> column){	   
+   public static int[][] suppressColumn(int[][] image, ArrayList<Integer> column){	   
 	   final int width = image[0].length;
 	   final int height = image.length;
-	   int currentLine = 0;
-	   
+	   int[][] nouvelleImage = new int[height][width-1];
 	   //System.out.println("image dimension: " + width + " ; " + height);
 	   //System.out.println("selected column : " + column);
 
@@ -185,16 +186,20 @@ public class SeamCarving
 		   int[] line = new int[width-1];
 		   int i=0;
 		   
-		   for(i=0; i < width-1 && i != colPixSuppr; i++){ //before pix
-			   line[i] = image[currentLine][i];
+		   for(i=0; i != colPixSuppr; i++){ //before pix
+			   nouvelleImage[j-1][i] = image[j-1][i];
 		   }
 		   for( ; i < width-1; i++){ //after pix
-			   line[i] = image[currentLine][i+1];
+			   nouvelleImage[j-1][i] = image[j-1][i+1];
 		   }
 		   
-		   image[currentLine] = line;
-		   currentLine++;
+		   /*for(int elem : nouvelleImage[j-1]){
+			   System.out.print(elem +" ");
+		   }
+		   System.out.println("\n");*/
+		   //System.out.println(image[j-1].toString());
 	   }
+	   return nouvelleImage;
    }
    
    
@@ -257,12 +262,12 @@ public class SeamCarving
 	   itr[1][1] = 78;
 	   
 	   Graph g = tograph(itr);
-	   g.writeFile("output.txt");
+	   g.writeFile("output.pgm");
 	   ArrayList<Integer> order = (ArrayList<Integer>) DFS.tritopo(g, g.vertices()-2);
-	   System.out.println(order);
+	   //System.out.println(order);
 	   List<Integer> path = Bellman(g, g.vertices()-2, g.vertices()-1, order);
 	   
-	   System.out.println(path);
+	 //  System.out.println(path);
    }
    
    
@@ -270,14 +275,26 @@ public class SeamCarving
 	   int[][] image = readpgm("input.pgm");
 	   int[][] interest = interest(image);
 	   
-	   for(int i=0; i < image.length; i++){
+	  /* for(int i=0; i < image.length; i++){
 		   for(int j=0; j < image[i].length; j++){
 			   System.out.print(image[i][j]+ " ");
 		   }
 		   System.out.println();
-	   }
+	   }*/
    }
    
+   /*public static void maleficCode(int [][] image){
+	   int temp;
+	   for(int i=1; i < image.length; i++){
+		   for(int k=0; k < i; k++){
+			   temp = image[i][0];
+			   for(int j=1; j < image[0].length; j++){
+				   image[i][j-1] = image[i][j];
+			   }
+			   image[i][image[0].length-1] = temp; 
+		   }
+	   }
+   }*/
    
    public static void main(String args[]){
 	   //SeamCarving.testWrite();
@@ -293,19 +310,35 @@ public class SeamCarving
 	   b.remove(0);
 	   System.out.println(b);*/
 	   
-	   if(args.length < 1){
-		   System.err.println("usage : java SeamCarving <filename>\n");
+	   if(args.length < 2){
+		   System.err.println("usage : java SeamCarving <filename> <col number>\n");
 		   return;
 	   }
 	   
+	   
+	   System.out.println("Vous pouvez aller chercher un cafe ;)");
+	   
+	   
 	   int[][] image = readpgm(args[0]);
-	   int[][] interest = interest(image);
-	   Graph graph = tograph(interest);
-	   ArrayList<Integer> order = (ArrayList<Integer>) DFS.tritopo(graph, graph.vertices()-2);
-	   ArrayList<Integer> selectedColumn = (ArrayList<Integer>) Bellman(graph, graph.vertices()-2, graph.vertices()-1, order);
-	   	   
-	   suppressColumn(image, selectedColumn);
-	   writepgm(image, "output.txt");
+	//   System.out.println("dimensions avant opération : " + image.length + " ; " + image[0].length);
+	   
+	   if(image.length < Integer.parseInt(args[1]) && image[0].length == 0){
+		   System.err.println("Image trop petite par rapport a l'argument");
+	   }
+	   
+	   for(int i = 0; i < Integer.parseInt(args[1]); i++){
+		   int[][] interest = interest(image);
+	   		Graph graph = tograph(interest);
+	   		ArrayList<Integer> order = DFS.tritopo(graph, graph.vertices()-2);
+	   		ArrayList<Integer> selectedColumn = Bellman(graph, graph.vertices()-2, graph.vertices()-1, order);
+	   		image = suppressColumn(image, selectedColumn);
+	   		System.out.println((i+1)+"/"+args[1]);
+	   }
+	  // System.out.println("dimensions après opération : " + image.length + " ; " + image[0].length);
+	   //maleficCode(image);
+	   writepgm(image, "output.pgm");
+	   
+	   System.out.println("Merci de votre patience !!!! :D");
 	   
 	   //testInterestInput();
    }
