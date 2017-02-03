@@ -124,6 +124,9 @@ public class SeamCarving
 	   ArrayList<Integer> res = new ArrayList<Integer>();
 	   int T[] = new int[g.vertices()];
 	   int history[] = new int[g.vertices()];
+	   for(int i=0; i < T.length; i++){
+		   T[i] = 70000;
+	   }
 	   T[order.get(0)] = 0;
 	   order.remove(0);
 	   
@@ -150,6 +153,8 @@ public class SeamCarving
 	   //get the best path
 	   int prev = t;
 	   res.add(t);
+	   //System.out.println("t: "+t);
+	   //System.out.println("history[t]: " + history[t]);
 	   while(history[prev] != s){
 		   res.add(history[prev]);
 		   prev = history[prev];
@@ -303,7 +308,7 @@ public class SeamCarving
 	   int[][] image = readpgm(args[0]);
 	//   System.out.println("dimensions avant opération : " + image.length + " ; " + image[0].length);
 	   
-	   if(image.length < Integer.parseInt(args[1]) && image[0].length == 0){
+	   if(image.length <= Integer.parseInt(args[1]) || image[0].length == 0){
 		   System.err.println("Image trop petite par rapport a l'argument");
 	   }
 	   
