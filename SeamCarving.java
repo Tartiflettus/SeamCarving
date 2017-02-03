@@ -121,7 +121,7 @@ public class SeamCarving
    
    
    public static ArrayList<Integer> Bellman(Graph g, int s, int t, ArrayList<Integer> order){
-	   ArrayList<Integer> res = new ArrayList<Integer>();
+	   ArrayList<Integer> res = new ArrayList<Integer>(order.size());
 	   int T[] = new int[g.vertices()];
 	   int history[] = new int[g.vertices()];
 	   for(int i=0; i < T.length; i++){
