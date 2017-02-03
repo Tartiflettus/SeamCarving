@@ -294,21 +294,34 @@ public class SeamCarving
    
    public static void main(String args[]){
 	   
-	   if(args.length < 2){
-		   System.err.println("usage : java SeamCarving <filename> <col number>\n");
+	   if(args.length < 3){
+		   System.err.println("usage : java SeamCarving <filename> <col number> <output filename>\n");
 		   return;
 	   }
 	   
+	   File f = new File(args[0]);
+	   if(!f.exists() || !f.isFile() || !f.canRead()){
+		   System.err.println("Impossible de lire "+args[0]);
+		   System.exit(-1);
+	   }
 	   
-	   System.out.println("Vous pouvez aller chercher un cafe ;)");
+	   
+	   f = new File(args[2]);
+	   if(f.exists() && !f.canWrite()){
+		   System.err.println("Impossible d'écrire dans "+args[2]);
+		   System.exit(-1);
+	   }
+	   
 	   
 	   
 	   int[][] image = readpgm(args[0]);
-	//   System.out.println("dimensions avant opération : " + image.length + " ; " + image[0].length);
 	   
 	   if(image.length <= Integer.parseInt(args[1]) || image[0].length == 0){
 		   System.err.println("Image trop petite par rapport a l'argument");
 	   }
+	   
+	   System.out.println("Vous pouvez aller chercher un cafe ;)");
+
 	   
 	   for(int i = 0; i < Integer.parseInt(args[1]); i++){
 		   int[][] interest = interest(image);
@@ -318,9 +331,8 @@ public class SeamCarving
 	   		image = suppressColumn(image, selectedColumn);
 	   		System.out.println((i+1)+"/"+args[1]);
 	   }
-	  // System.out.println("dimensions après opération : " + image.length + " ; " + image[0].length);
-	   //maleficCode(image);
-	   writepgm(image, "output.pgm");
+
+	   writepgm(image, args[2]);
 	   
 	   System.out.println("Merci de votre patience !!!! :D");
 	   
