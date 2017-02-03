@@ -129,14 +129,12 @@ public class SeamCarving
 	   }
 	   int indexCurrentOrder = 1;
 	   T[order.get(0)] = 0;
-	   //order.remove(0);
 	   
 	   boolean finished = false;
 	   while(! finished){
 		   int vertex = order.get(indexCurrentOrder);
 		   indexCurrentOrder++;
 		   //System.out.println("vertex : " + vertex);
-		   //order.remove(0);
 		   finished = indexCurrentOrder == order.size();
 		   
 		   int min = 70000; //infinite
@@ -155,8 +153,6 @@ public class SeamCarving
 	   //get the best path
 	   int prev = t;
 	   res.add(t);
-	   //System.out.println("t: "+t);
-	   //System.out.println("history[t]: " + history[t]);
 	   while(history[prev] != s){
 		   res.add(history[prev]);
 		   prev = history[prev];
