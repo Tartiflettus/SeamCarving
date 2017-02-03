@@ -127,15 +127,17 @@ public class SeamCarving
 	   for(int i=0; i < T.length; i++){
 		   T[i] = 70000;
 	   }
+	   int indexCurrentOrder = 1;
 	   T[order.get(0)] = 0;
-	   order.remove(0);
+	   //order.remove(0);
 	   
 	   boolean finished = false;
 	   while(! finished){
-		   int vertex = order.get(0);
+		   int vertex = order.get(indexCurrentOrder);
+		   indexCurrentOrder++;
 		   //System.out.println("vertex : " + vertex);
-		   order.remove(0);
-		   finished = order.isEmpty();
+		   //order.remove(0);
+		   finished = indexCurrentOrder == order.size();
 		   
 		   int min = 70000; //infinite
 		   int vertexOfMin = vertex;
