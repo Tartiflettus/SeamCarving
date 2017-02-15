@@ -105,7 +105,8 @@ class DFS
     }
 
 
-    public static ArrayList<Integer> tritopo(Graph g, int s){
+    public static ArrayList<Integer> tritopo_qui_rox_du_poney_tientavu_et_qui_envoie_du_pate_quand_meme_rien_qu_un_peu_sans_plus_parc_qu_il_y_a_pas_de_tartiflette
+    (Graph g, int s){
     	ArrayList<Integer> res = new ArrayList<Integer>(g.vertices());
     	
     	Stack<Vertex> stack = new Stack<Vertex>();
@@ -161,7 +162,7 @@ class DFS
 		g.addEdge(new Edge(3, 5, 0));
 	
 	
-		List<Integer> res = tritopo(g, g.vertices()-2);
+		List<Integer> res = tritopo_qui_rox_du_poney_tientavu_et_qui_envoie_du_pate_quand_meme_rien_qu_un_peu_sans_plus_parc_qu_il_y_a_pas_de_tartiflette(g, g.vertices()-2);
 		System.out.println(res);
 
     }
