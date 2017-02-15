@@ -1,9 +1,12 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 class DFS
 {
+	
     
     public static void botched_dfs1(Graph g, int s){
 	Stack<Integer> stack = new Stack<Integer>();
@@ -58,7 +61,7 @@ class DFS
     }
 
     
-    public static ArrayList<Integer> tritopo(Graph g, int s){
+    public static ArrayList<Integer> tritopo_save(Graph g, int s){
 	    ArrayList<Integer> res = new ArrayList<Integer>(g.vertices());
 	    	
 		Stack<Integer> stack = new Stack<Integer>();
@@ -102,52 +105,64 @@ class DFS
     }
 
 
-    /*public static ArrayList<Integer> tritopo(Graph g, int s){
-    	ArrayList<Integer> res = new ArrayList<Integer>();
-    	boolean[] visite = new boolean[g.vertices()];
+    public static ArrayList<Integer> tritopo(Graph g, int s){
+    	ArrayList<Integer> res = new ArrayList<Integer>(g.vertices());
     	
-    	helpTritopo(g, s, res, visite);
-    	
-    	for(int i=0; i < res.size()/2; i++){
-    		int tmp = res.get(i);
-    		res.set(i, res.get(res.size()-i-1));
-    		res.set(res.size()-i-1, tmp);
+    	Stack<Vertex> stack = new Stack<Vertex>();
+    	stack.add(new Vertex(s, g.next(s).iterator()) );
+    	boolean[] visited = new boolean[g.vertices()];
+    	for(int i=0; i < visited.length; i++){
+    		visited[i] = false;
     	}
-    	return res;
-    }
-
-    
-    public static void helpTritopo(Graph g, int s, ArrayList<Integer> res, boolean[] visite){
-    	visite[s] = true;
-    	for(Edge e : g.next(s)){
-    		if(!visite[e.to]){
-    			helpTritopo(g, s, res, visite);
+    	visited[s] = true;
+    	
+    	while(!stack.isEmpty()){
+    		Vertex peek = stack.peek();
+    		if(peek.adjs.hasNext()){
+    			//u has a neighbor
+    			int v = peek.adjs.next().to;
+    			if(visited[v]){
+    				//already visited
+    				continue; //return to the loop's begin
+    			}else{
+    				//not visited yet
+    				visited[v] = true;
+    				stack.push(new Vertex(v, g.next(v).iterator()));
+    			}
+    		}else{
+    			//u has no neighbor => finished visiting => add to suffix order
+    			stack.pop();
+    			res.add(peek.u);
     		}
     	}
-    	res.add(s);
-    }*/
+    	
+    	
+    	for(int i=0; i < res.size()/2; i++){
+			int tmp = res.get(i);
+			res.set(i, res.get(res.size()-1-i));
+			res.set(res.size()-1-i, tmp);
+		}
+    	
+    	return res;
+    }
 
     
     
     public static void testGraph()
     {
-	int n = 5;
-	int i,j;
-	GraphArrayList g = new GraphArrayList(6);
-	g.addEdge(new Edge(0, 1, 1));
-	g.addEdge(new Edge(0, 2, 1));
-	g.addEdge(new Edge(0, 3, 1));
-	g.addEdge(new Edge(1, 4, 1));
-	g.addEdge(new Edge(4, 3, 1));
-	g.addEdge(new Edge(3, 5, 1));
-	g.addEdge(new Edge(5, 1, 1));
-	//botched_dfs1(g, 0);
-	//botched_dfs2(g, 0);
-	//botched_dfs3(g, 0);
-	//botched_dfs4(g, 0);
-
-	List<Integer> res = tritopo(g, g.vertices()-2);
-	System.out.println(res);
+		GraphArrayList g = new GraphArrayList(6);
+		g.addEdge(new Edge(4, 0, 0));
+		g.addEdge(new Edge(4, 1, 0));
+		g.addEdge(new Edge(0, 2, 0));
+		g.addEdge(new Edge(0, 3, 0));
+		g.addEdge(new Edge(1, 2, 0));
+		g.addEdge(new Edge(1, 3, 0));
+		g.addEdge(new Edge(2, 5, 0));
+		g.addEdge(new Edge(3, 5, 0));
+	
+	
+		List<Integer> res = tritopo(g, g.vertices()-2);
+		System.out.println(res);
 
     }
     
