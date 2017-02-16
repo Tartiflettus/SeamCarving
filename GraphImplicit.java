@@ -54,12 +54,33 @@ class GraphImplicit implements Graph{
 
 
 
-@SuppressWarnings("unchecked")
+
    public Iterable<Edge> prev(int v)
 	 {
 	     ArrayList<Edge> edges = new ArrayList();
-	     for (int i = 0; i < v-1; i++)
-		  edges.add(new Edge(i,v,v));
+	   
+	     if(v == vertices()-2)
+	    	 return edges;
+	     
+	     if(v < w){
+	    	 edges.add(new Edge(vertices()-2, v, 0));
+	    	 return edges;
+	     }
+	     
+	     if(v == vertices()-1){
+	    	 for(int i = w*h-w; i < w*h; i++){
+	    		 edges.add(new Edge(i, v, interest[i/w][i%w]));
+	    	 }
+	    	 return edges;
+	     }
+	     
+	     edges.add(new Edge(v-w , v, interest[(v-w)/w][(v-w)%w]));
+	     if(v%w != 0)
+	    	 edges.add(new Edge(v-w -1, v, interest[(v-w-1)/w][(v-w-1)%w]));
+	     
+	     if(v%w != w-1)
+	    	 edges.add(new Edge(v-w +1, v, interest[(v-w+1)/w][(v-w+1)%w]));
+	     
 	     return edges;
 		      
 	 }

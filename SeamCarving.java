@@ -325,7 +325,8 @@ public class SeamCarving
 	   
 	   for(int i = 0; i < Integer.parseInt(args[1]); i++){
 		   int[][] interest = interest(image);
-	   		Graph graph = tograph(interest);
+	   		//Graph graph = tograph(interest);
+		   Graph graph = new GraphImplicit(interest, interest[0].length, interest.length);
 	   		ArrayList<Integer> order = DFS.tritopo_qui_rox_du_poney_tientavu_et_qui_envoie_du_pate_quand_meme_rien_qu_un_peu_sans_plus_parc_qu_il_y_a_pas_de_tartiflette(graph, graph.vertices()-2);
 	   		ArrayList<Integer> selectedColumn = Bellman(graph, graph.vertices()-2, graph.vertices()-1, order);
 	   		image = suppressColumn(image, selectedColumn);
