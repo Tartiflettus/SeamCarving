@@ -295,7 +295,7 @@ public class SeamCarving
    public static void main(String args[]){
 	   
 	   if(args.length < 3){
-		   System.err.println("usage : java SeamCarving <filename> <col number> <output filename>\n");
+		  System.err.println("usage : java SeamCarving <filename> <col number> <output filename>\n");
 		   return;
 	   }
 	   
